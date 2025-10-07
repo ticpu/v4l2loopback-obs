@@ -54,6 +54,9 @@
 #define VFL_TYPE_VIDEO VFL_TYPE_GRABBER
 #endif
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 18, 0)
+#define v4l2_fh_add(fh, filp) v4l2_fh_add(fh)
+#endif
 #define V4L2LOOPBACK_VERSION_CODE                                              \
 	KERNEL_VERSION(V4L2LOOPBACK_VERSION_MAJOR, V4L2LOOPBACK_VERSION_MINOR, \
 		       V4L2LOOPBACK_VERSION_BUGFIX)
@@ -2233,9 +2236,9 @@ static int v4l2_loopback_open(struct file *file)
 	v4l2_fh_init(&opener->fh, video_devdata(file));
 	file->private_data = &opener->fh;
 
-	v4l2_fh_add(&opener->fh);
-	dprintk("opened dev:%p with image:%p\n", dev, dev ? dev->image : NULL);
-	MARK();
+	v4l2_fh_add(&opener->fh, file);
+	dprintk("open() -> dev@%p with image@%p\n", dev,
+		dev ? dev->image : NULL);
 	return 0;
 }
 
