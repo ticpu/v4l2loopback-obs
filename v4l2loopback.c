@@ -56,6 +56,7 @@
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 18, 0)
 #define v4l2_fh_add(fh, filp) v4l2_fh_add(fh)
+#define v4l2_fh_del(fh, filp) v4l2_fh_del(fh)
 #endif
 #define V4L2LOOPBACK_VERSION_CODE                                              \
 	KERNEL_VERSION(V4L2LOOPBACK_VERSION_MAJOR, V4L2LOOPBACK_VERSION_MINOR, \
@@ -2264,7 +2265,7 @@ static int v4l2_loopback_close(struct file *file)
 	}
 	try_free_buffers(dev);
 
-	v4l2_fh_del(&opener->fh);
+	v4l2_fh_del(&opener->fh, file);
 	v4l2_fh_exit(&opener->fh);
 
 	kfree(opener);
